@@ -6,19 +6,17 @@
 //  Copyright (c) 2015 Startside Softworks. All rights reserved.
 //
 
+// Note: Failing tests are existing failures from before the Swift Package conversion.
+
 import UIKit
 import XCTest
 
 extension CGPath {
 
     func forEach( body: @convention(block) (CGPathElement) -> Void) {
-        typealias Body = @convention(block) (CGPathElement) -> Void
-        let callback: @convention(c) (UnsafeMutableRawPointer, UnsafePointer<CGPathElement>) -> Void = { (info, element) in
-            let body = unsafeBitCast(info, to: Body.self)
+        applyWithBlock { element in
             body(element.pointee)
         }
-        let unsafeBody = unsafeBitCast(body, to: UnsafeMutableRawPointer.self)
-        self.apply(info: unsafeBody, function: unsafeBitCast(callback, to: CGPathApplierFunction.self))
     }
 }
 
